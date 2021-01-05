@@ -1,0 +1,46 @@
+feature 3 - caras
+feature 19 - caras
+feature 32 - úes, cuellos
+feature 67 - abdomenes?
+feature 96 - extremidades
+feature 98 - caras
+feature 245 - arcos
+T-SNE
+K-means
+CLUSTERING
+
+-clustering
+-crear un dataset de 5 clases de atributos, cada clase con 50 imagenes (sin ruido)
+-visualizar la activacion de los canales de los bloques 3, 4 y 5 de la resnet-34
+-con modelo de ropa e imagenet
+-quitar activaciones minimas y maximas outliers
+-para viernes 06
+-en el peor caso, recurriremos a un modelo entrenado
+
+fresh free smuf
+
+06/11
+evaluar bondad de cada bloque para discriminar
+comparar distribuciones de activacion
+evaluar cambiar average por max
+evaluar desempeño sobre imagenes con ruido
+
+funciones de similitud:
+-divergencia KL
+-simillitud coseno
+-distancia euclidiana
+
+evaluar desempeño de modelos generales vs específicos
+
+prox reunion miercoles
+
+reunion 16/11
+
+extender dataset con mas clases (10 texturas y 10 colores) 
+analizar clasificaciones erróneas
+considerar varianza en las activaciones
+probar vecino mas cercano con k = 3, 5
+k-means en cada categoría
+clusterizar ejemplos 
+evaluar usar thresholds
+

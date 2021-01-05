@@ -1,0 +1,142 @@
+Duffel Bag	0
+Basketballs	1
+Eye Cream	2
+Travel Accessory	3
+Innerwear Vests	4
+Nehru Jackets	5
+Booties	6
+Flats	7
+Body Wash and Scrub	8
+Sweaters	9
+Dupatta	10
+Clothing Set	11
+Blazers	12
+Shapewear	13
+Rucksacks	14
+Headband	15
+Tracksuits	16
+Nail Polish	17
+Key chain	18
+Water Bottle	19
+Cushion Covers	20
+Trolley Bag	21
+Swimwear	22
+Shoe Accessories	23
+Face Wash and Cleanser	24
+Mascara	25
+Toner	26
+Cufflinks	27
+Fragrance Gift Set	28
+Ties and Cufflinks	29
+Watches	30
+Capris	31
+Tunics	32
+Heels	33
+Sarees	34
+Ring	35
+Lounge Pants	36
+Sports Shoes	37
+Suspenders	38
+Foundation and Primer	39
+Handbags	40
+Kurta Sets	41
+Messenger Bag	42
+Robe	43
+Sunscreen	44
+Dresses	45
+Clutches	46
+Sweatshirts	47
+Hat	48
+Laptop Bag	49
+Accessory Gift Set	50
+Caps	51
+Leggings	52
+Eyeshadow	53
+Trunk	54
+Scarves	55
+Camisoles	56
+Ipad	57
+Kurtas	58
+Beauty Accessory	59
+Gloves	60
+Skirts	61
+Mask and Peel	62
+Rain Jacket	63
+Umbrellas	64
+Kurtis	65
+Socks	66
+Formal Shoes	67
+Kajal and Eyeliner	68
+Lip Plumper	69
+Compact	70
+Mobile Pouch	71
+Lipstick	72
+Mens Grooming Kit	73
+Rain Trousers	74
+Nail Essentials	75
+Perfume and Body Mist	76
+Track Pants	77
+Face Serum and Gel	78
+Earrings	79
+Nightdress	80
+Waistcoat	81
+Tops	82
+Tablet Sleeve	83
+Lounge Shorts	84
+Wallets	85
+Lip Liner	86
+Ties	87
+Flip Flops	88
+Casual Shoes	89
+Jeggings	90
+Lehenga Choli	91
+Belts	92
+Waist Pouch	93
+Shoe Laces	94
+Boxers	95
+Free Gifts	96
+Patiala	97
+Salwar	98
+Deodorant	99
+Face Moisturisers	100
+Backpacks	101
+Jumpsuit	102
+Shrug	103
+Makeup Remover	104
+Mufflers	105
+Bangle	106
+Salwar and Dupatta	107
+Hair Accessory	108
+Trousers	109
+Churidar	110
+Sports Sandals	111
+Hair Colour	112
+Sunglasses	113
+Rompers	114
+Body Lotion	115
+Shorts	116
+Baby Dolls	117
+Bath Robe	118
+Jewellery Set	119
+Pendant	120
+Lip Care	121
+Sandals	122
+Highlighter and Blush	123
+Necklace and Chains	124
+Tights	125
+Bracelet	126
+Lounge Tshirts	127
+Concealer	128
+Night suits	129
+Stockings	130
+Wristbands	131
+Stoles	132
+Lip Gloss	133
+Face Scrub and Exfoliator	134
+Jeans	135
+Briefs	136
+Tshirts	137
+Footballs	138
+Shirts	139
+Jackets	140
+Bra	141

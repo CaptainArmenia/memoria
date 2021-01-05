@@ -1,0 +1,13 @@
+camOutputs/
+__pycache__/
+.idea/
+*.model
+data390p/
+images/
+images120p/
+images390p/
+venv/
+*.npy
+data/test.tfrecords
+data/train.tfrecords
+graficos/

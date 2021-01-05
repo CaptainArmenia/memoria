@@ -1,0 +1,2 @@
+{"rayas":[{"id":"15170","clase":"polera"}, {"id":"15245","clase":"zapatilla"},{"id":"15555","clase":"chaleco"},{"id":"15918","clase":"mochila"},{"id":"18222","clase":"calcetines"},{"id":"17637","clase":"bufanda"},{"id":"17780","clase":"corbata"},{"id":"18043","clase":"cartera"},{"id":"18499","clase":"chaleco sin mangas"},{"id":"20310","clase":"blusa"},{"id":"19435","clase":"gorro"},{"id":"19868","clase":"sandalias"},{"id":"20191","clase":"polera mangas largas"},]}
+	

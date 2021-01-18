@@ -40,8 +40,11 @@ def partial_forward(model, target_layer_name, input_file):
     return func(input)
 
 #vecinos más cercanos
-def knn(input, data_lake, k):
-    min_distances = [cos_distance(input, x) for x in data_lake]
+def knn(input, data_lake, k, func):
+    if func == "cos":
+        min_distances = [cos_distance(input, x) for x in data_lake]
+    elif func == "euclid":
+        min_distances = [euclidean_dist(input, x) for x in data_lake]
     min_distances_with_indices = list(enumerate(min_distances))
     min_distances_with_indices.sort(key=(lambda x: x[1]), reverse=False)
     output = [min_distances_with_indices[x] for x in range(k)]

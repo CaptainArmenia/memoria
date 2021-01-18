@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
+import matplotlib.image as mpimg
 import tensorflow as tf
 import tensorflow.keras.backend as K
 import seaborn as sns
@@ -7,7 +8,7 @@ import os
 from tqdm import tqdm
 import utils.configuration as conf
 import umap
-from inferencia import absoluteFilePaths, get_activations, save_activations, load_activations
+from inferencia import absoluteFilePaths, get_activations, save_activations, load_activations, knn
 from sklearn.metrics import adjusted_rand_score, adjusted_mutual_info_score
 import hdbscan
 
@@ -38,7 +39,7 @@ else:
 
 #input_path = "C:/Users/andyb/OneDrive/Documentos/memoria/distance_val_dataset/"
 baseline_path = "C:/Users/andyb/OneDrive/Documentos/memoria/datasets/LISTO/"
-output_path = "C:/Users/andyb/OneDrive/Documentos/memoria/graficos/"
+output_path = "C:/Users/andyb/OneDrive/Documentos/memoria/graficos/experimentos_embedding/"
 
 model = tf.keras.applications.resnet50.ResNet50(include_top= True, classifier_activation="softmax", weights= 'imagenet', input_shape= input_shape, classes=1000)
 #model = tf.keras.models.load_model('C:/Users/andyb/PycharmProjects/kerasResnet/resnet50.model', compile = True)
@@ -63,7 +64,7 @@ forward = K.function([model.input], target_layer.output[0])
 
 image_set = []
 
-#se dividen los archivos en entrenamiento/validacion
+#se obtienen los paths de los archivos del dataset
 for feature_idx, feature in enumerate(features):
     paths = list(absoluteFilePaths(baseline_path + feature))
     image_set += paths
@@ -81,10 +82,52 @@ else:
         activations = get_activations(model, image_set, target_layer_name, pooled=True)
         save_activations(activations, feature_type, target_layer_name, "embedding_classification")
 
-targets = [x // n_ejemplos for x in range(0, n_ejemplos * len(features))]
-targets = np.array(targets)
 reducer = umap.UMAP()
 embedding = reducer.fit_transform(activations)
+nn = knn(embedding[540], embedding, 5, "euclid")
+
+plt.rcParams["axes.grid"] = False
+for i, x in enumerate(nn):
+    path = image_set[x[0]]
+    img = mpimg.imread((path))
+    imgplot = plt.imshow(img)
+    plt.savefig(output_path + str(i) + ".jpg")
+    plt.show()
+
+
+plt.rcParams["axes.grid"] = True
+prop_iter = iter(plt.rcParams['axes.prop_cycle'])
+fig, ax = plt.subplots()
+
+for j in range(len(features)):
+    x = embedding[n_ejemplos * j: n_ejemplos * (j + 1), 0]
+    y = embedding[n_ejemplos * j: n_ejemplos * (j + 1):, 1]
+    ax.scatter(
+        x,
+        y,
+        c=[sns.color_palette()[x // n_ejemplos] for x in list(map((lambda x: x[0]), enumerate(embedding)))[n_ejemplos * j: n_ejemplos * (j + 1)]],
+        label=features[j],
+        alpha=0.3
+    )
+
+x = [embedding[k[0]][0] for k in nn]
+y = [embedding[k[0]][1] for k in nn]
+ax.scatter(
+    x,
+    y,
+    s=150,
+    facecolors='none',
+    edgecolors='yellow'
+)
+
+
+plt.gca().set_aspect('equal', 'datalim')
+plt.title('Proyección UMAP sobre activaciones en capa ' + target_layer_name, fontsize=12)
+plt.legend()
+ax.grid(True)
+plt.savefig(output_path + "proyeccion_umap_" + feature_type + "_" + target_layer_name + ".png")
+plt.show()
+
 
 
 

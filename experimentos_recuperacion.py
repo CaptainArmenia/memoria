@@ -61,9 +61,9 @@ for feature_idx, feature in enumerate(features):
 #se cargan o se generan las activaciones
 if generar_activaciones:
     activations = get_activations(model, training_set, target_layer_name, pooled=True)
-    save_activations(activations, tipo_de_atributo, target_layer_name)
+    save_activations(activations, tipo_de_atributo, target_layer_name, "retrieval")
 else:
-    activations = load_activations(tipo_de_atributo, target_layer_name)
+    activations = load_activations(tipo_de_atributo, target_layer_name, "retrieval")
 
 #inferencia utilizando knn
 series_results_by_feature = []

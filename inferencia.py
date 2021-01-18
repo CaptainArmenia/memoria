@@ -5,6 +5,7 @@ import tensorflow.keras.preprocessing.image as image
 import os
 from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
 from collections import Counter
+from tqdm import tqdm
 
 #sns.set()
 
@@ -66,13 +67,12 @@ def divide_set(dataset, training_fraction):
 
 #crea una lista con las activaciones de cada input
 def get_activations(model, input_list, target_layer_name, pooled=False):
+    pbar = tqdm(total=len(input_list))
     target_layer = model.get_layer(target_layer_name)
     channels = target_layer.output_shape[-1]
     activations = np.empty((0, channels))
 
     for idx, input_file in enumerate(input_list):
-        print("calculando activaciones - " + "{:.1f}".format(
-            idx * 100 / (len(input_list))) + "%")
         result = partial_forward(model, target_layer_name, input_file)
         result = np.expand_dims(result, axis=0)
 
@@ -82,18 +82,18 @@ def get_activations(model, input_list, target_layer_name, pooled=False):
         else:
             activations = np.append(activations, result, axis=0)
 
+        pbar.update(1)
+
     return activations
 
 #serializa y guarda las activaciones en un archivo
-def save_activations(activations, tipo_de_atributo, target_layer_name):
-    np.save('activations_data_' + tipo_de_atributo + "_" + target_layer_name + '.npy', activations)
+def save_activations(activations, tipo_de_atributo, target_layer_name, experiment_name):
+    np.save('activations_data_' + tipo_de_atributo + "_" + target_layer_name + "_" + experiment_name +'.npy', activations)
 
 #carga las activaciones a partir de un archivo
-def load_activations(tipo_de_atributo, target_layer_name):
-    try:
-        return np.load('activations_data_' + tipo_de_atributo + "_" + target_layer_name + '.npy')
-    except:
-        print("No existen activaciones guardadas para " + tipo_de_atributo + " y capa " + target_layer_name)
+def load_activations(tipo_de_atributo, target_layer_name, experiment_name):
+    return np.load('activations_data_' + tipo_de_atributo + "_" + target_layer_name + "_" + experiment_name + '.npy')
+
 
 
 

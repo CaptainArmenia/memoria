@@ -50,7 +50,7 @@ epsilon = 0.00000001
 
 output_path = "C:/Users/andyb/OneDrive/Documentos/memoria/graficos/resultados_distancia_distribuciones/"
 
-disable_eager_execution()
+#disable_eager_execution()
 #model = tf.keras.applications.resnet50.ResNet50(include_top= True, classifier_activation="softmax", weights= 'imagenet', input_shape= input_shape, classes=1000)
 model = tf.keras.models.load_model('C:/Users/andyb/PycharmProjects/kerasResnet/resnet50.model', compile = True)
 for layer in model.layers:

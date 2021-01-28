@@ -6,6 +6,18 @@ import os
 from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
 from collections import Counter
 from tqdm import tqdm
+import utils.configuration as conf
+import cv2
+import utils.imgproc as imgproc
+
+#archivo de configuraciones
+configuration_file = "configs/cnn.config"
+configuration = conf.ConfigurationFile(configuration_file, "RES")
+shape_file = os.path.join(configuration.get_data_dir(),"shape.dat")
+mean_file = os.path.join(configuration.get_data_dir(), "mean.dat")
+input_shape = np.fromfile(shape_file, dtype=np.int32)
+mean_image = np.fromfile(mean_file, dtype=np.float32)
+mean_image = np.reshape(mean_image, input_shape)
 
 #sns.set()
 
@@ -24,9 +36,21 @@ def absoluteFilePaths(directory):
        for f in filenames:
            yield os.path.abspath(os.path.join(dirpath, f))
 
-#inferencia parcial
-def partial_forward(model, target_layer_name, input_file):
+def prepare(filepath, mean_image, h, w):
+    width = w
+    height = h
+    img_array = cv2.imread(filepath)  # read in the image
+    img_array = imgproc.toUINT8(img_array)
+    img_array = imgproc.process_image(img_array, (height, width))
+    img_array = np.float32(img_array)
+    new_array = cv2.resize(img_array, (width, height))  # resize image to match model's expected sizing
+    res = new_array.reshape(-1, height, width, 3)
 
+    res = res - mean_image
+    return res  # return the image with shaping that TF wants.
+
+#inferencia parcial
+def partial_forward(model, weights, target_layer_name, input_file):
     target_layer = model.get_layer(target_layer_name)
     func = K.function([model.input], target_layer.output[0])
     img = image.load_img(input_file)
@@ -35,8 +59,12 @@ def partial_forward(model, target_layer_name, input_file):
     x = image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
 
-    # input para resnet imagenet
-    input = preprocess_input(x)
+    if weights == "imagenet":
+        # input para resnet imagenet
+        input = preprocess_input(x)
+    else:
+        # input para keras resnet
+        input = prepare(input_file, mean_image, input_shape[0], input_shape[1])
     return func(input)
 
 #vecinos más cercanos
@@ -69,14 +97,14 @@ def divide_set(dataset, training_fraction):
     return [training_set, validation_set]
 
 #crea una lista con las activaciones de cada input
-def get_activations(model, input_list, target_layer_name, pooled=False):
+def get_activations(model, weights, input_list, target_layer_name, pooled=False):
     pbar = tqdm(total=len(input_list))
     target_layer = model.get_layer(target_layer_name)
     channels = target_layer.output_shape[-1]
     activations = np.empty((0, channels))
 
     for idx, input_file in enumerate(input_list):
-        result = partial_forward(model, target_layer_name, input_file)
+        result = partial_forward(model, weights, target_layer_name, input_file)
         result = np.expand_dims(result, axis=0)
 
         if pooled:
@@ -89,13 +117,13 @@ def get_activations(model, input_list, target_layer_name, pooled=False):
 
     return activations
 
-#serializa y guarda las activaciones en un archivo
-def save_activations(activations, tipo_de_atributo, target_layer_name, experiment_name):
-    np.save('activations_data_' + tipo_de_atributo + "_" + target_layer_name + "_" + experiment_name +'.npy', activations)
+#wrapper - serializa y guarda las activaciones en un archivo
+def save_activations(activations, path):
+    np.save(path, activations)
 
-#carga las activaciones a partir de un archivo
-def load_activations(tipo_de_atributo, target_layer_name, experiment_name):
-    return np.load('activations_data_' + tipo_de_atributo + "_" + target_layer_name + "_" + experiment_name + '.npy')
+#wrapper - carga las activaciones a partir de un archivo
+def load_activations(path):
+    return np.load(path)
 
 
 

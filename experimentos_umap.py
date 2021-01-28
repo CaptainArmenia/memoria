@@ -22,8 +22,10 @@ sns.set()
 #features = ["cuadros", "rayas"]
 n_ejemplos = 100
 input_shape = (224, 224, 3)
-feature_type = "texturas"
+feature_type = "colores"
+n_neighbors = 10
 generar_activaciones = False
+weights = "imagenet"
 
 if feature_type == "colores":
     target_layer_name = "conv2_block3_out"
@@ -37,11 +39,15 @@ else:
 
 #input_path = "C:/Users/andyb/OneDrive/Documentos/memoria/distance_val_dataset/"
 input_path = "C:/Users/andyb/OneDrive/Documentos/memoria/datasets/LISTO/"
-output_path = "C:/Users/andyb/OneDrive/Documentos/memoria/graficos/"
+output_path = "C:/Users/andyb/OneDrive/Documentos/memoria/graficos/experimentos_embedding/"
 
 #disable_eager_execution()
-model = tf.keras.applications.resnet50.ResNet50(include_top= True, classifier_activation="softmax", weights= 'imagenet', input_shape= input_shape, classes=1000)
-#model = tf.keras.models.load_model('C:/Users/andyb/PycharmProjects/kerasResnet/resnet50.model', compile = True)
+if weights == "imagenet":
+    model = tf.keras.applications.resnet50.ResNet50(include_top= True, classifier_activation="softmax", weights= 'imagenet', input_shape= input_shape, classes=1000)
+elif weights == "kaggle":
+    model = tf.keras.models.load_model('C:/Users/andyb/PycharmProjects/kerasResnet/resnet50.model', compile = True)
+else:
+    raise Exception("Modelo invalido")
 
 for layer in model.layers:
     print(layer.name)
@@ -64,22 +70,21 @@ for feature_idx, feature in enumerate(features):
 
 #se cargan o se generan las activaciones
 if generar_activaciones:
-    activations = get_activations(model, image_set, target_layer_name, pooled=True)
-    save_activations(activations, feature_type, target_layer_name, "embedding_classification")
+    activations = get_activations(model, weights, image_set, target_layer_name, pooled=True)
+    save_activations(activations, feature_type + "_" + target_layer_name +  "_embedding_activations_" + weights + ".npy")
 else:
     try:
-        activations = load_activations(feature_type, target_layer_name, "embedding_classification")
+        activations = load_activations(feature_type + "_" + target_layer_name +  "_embedding_activations_" + weights + ".npy")
     except Exception as e:
         print("No se pudo cargar activaciones")
         print("Generando nuevas activaciones")
-        activations = get_activations(model, image_set, target_layer_name, pooled=True)
-        save_activations(activations, feature_type, target_layer_name, "embedding_classification")
-
+        activations = get_activations(model, weights, image_set, target_layer_name, pooled=True)
+        save_activations(activations, feature_type + "_" + target_layer_name +  "_embedding_activations_" + weights + ".npy")
 
 targets = [x // n_ejemplos for x in range(0, n_ejemplos * len(features))]
 targets = np.array(targets)
 
-reducer = umap.UMAP()
+reducer = umap.UMAP(n_neighbors=10)
 embedding = reducer.fit_transform(activations)
 prop_iter = iter(plt.rcParams['axes.prop_cycle'])
 fig, ax = plt.subplots()
@@ -97,7 +102,7 @@ for j in range(len(features)):
     )
 
 plt.gca().set_aspect('equal', 'datalim')
-plt.title('Proyección UMAP sobre activaciones en capa ' + target_layer_name, fontsize=12)
+plt.title('UMAP sobre activaciones en capa ' + target_layer_name + " - " + weights + " - nn = " + str(n_neighbors), fontsize=12)
 plt.legend()
 plt.text(1, 0, 'adjusted-rand-score: {:.1f}'.format(a_rand_score),
          rotation=0,
@@ -111,6 +116,10 @@ plt.text(1, 0.05, 'adjusted-MI-score: {:.1f}'.format(a_mi_score),
          transform=ax.transAxes)
 
 ax.grid(True)
-plt.savefig(output_path + "proyeccion_umap_" + feature_type + "_" + target_layer_name + ".png")
+plt.savefig(output_path + "proyeccion_umap_" + weights + "_" + feature_type + "_" + str(n_neighbors) + "_neighbors_" + target_layer_name + ".png")
 plt.show()
+
+
+
+
 
